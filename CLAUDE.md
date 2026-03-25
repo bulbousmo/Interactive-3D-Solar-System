@@ -43,8 +43,21 @@ Additional resources that I plan on using are online documentation and forums di
 
 ## Current State
 
-The project is scaffolded as an interactive 3D solar system but currently renders a basic rotating cube as a starting point. The scene includes:
-- Perspective camera with adjustable Z position via dat.gui
-- Auto-rotating object with GUI controls for rotation axes, color, and wireframe
-- Window resize handler that updates camera aspect ratio and renderer dimensions
+The cube demo has been replaced. The following modules are implemented:
+
+- **`scene/SceneManager.ts`** — owns the Three.js scene, camera, renderer, and animation loop. Other modules register per-frame callbacks via `sceneManager.onAnimate(delta => { ... })` and add objects via `scene.add(mesh)`. Shadow maps are enabled (`PCFSoftShadowMap`). Far clip plane is `1,000,000` for solar system scale.
+- **`bodies/SolarBody.ts`** — base class for all spherical bodies. Takes `name`, `radius`, `texturePath`, `rotationSpeed`. Exposes a `mesh` (caller adds it to the scene) and an `update(delta)` method that spins it on the Y axis.
+- **`data/planets.ts`** — exports a `PlanetData` interface and a `planets` array with all 8 planets. Distance is in scene units (~150 = 1 AU). Radius is exaggerated for visibility. Tilt is in radians.
+
+## What's Next
+
+Build these in order:
+
+1. **`Planet.ts`** — extends `SolarBody`. Reads from `PlanetData`. Handles orbital movement around the sun (use a pivot `Object3D` at the origin, add the mesh to it offset by `distance`, rotate the pivot each frame by `orbitSpeed * delta`). Apply `tilt` to `mesh.rotation.z`.
+2. **`Sun.ts`** — extends `SolarBody`. Adds a `PointLight` at the origin (the sun is the only light source). Use `MeshBasicMaterial` instead of `MeshStandardMaterial` so it isn't affected by its own light.
+3. **`data/moons.ts`** — same pattern as `planets.ts`. Add a `parentPlanet: string` field to link moons to their parent.
+4. **`Moon.ts`** — extends `SolarBody`. Same pivot orbit pattern as `Planet.ts` but pivots around its parent planet's position instead of the origin.
+5. **`scene/StarField.ts`** — creates a `Points` geometry with randomly distributed vertices across a large sphere for the background star field.
+6. **`controls/CameraController.ts`** — free-roam 3D movement (no flat plane constraint).
+7. **`interaction/Raycaster.ts`**, **`controls/FocusController.ts`**, **`ui/InfoPanel.ts`**, **`ui/SearchBar.ts`** — click/search to focus and display planet facts.
 
