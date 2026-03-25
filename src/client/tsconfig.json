@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "bundler",
+        "module": "es2015",
+        "target": "es6",
+        "strict": true
+    },
+    "include": ["**/*.ts"]
+}
