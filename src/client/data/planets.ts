@@ -15,7 +15,7 @@ export const planets: PlanetData[] = [
         distance: 58,
         rotationSpeed: 0.01,
         orbitSpeed: 0.04,
-        texturePath: 'textures/mercury.jpg',
+        texturePath: 'textures/2k_mercury.jpg',
         tilt: 0.03
     },
     {
@@ -24,7 +24,7 @@ export const planets: PlanetData[] = [
         distance: 108,
         rotationSpeed: -0.004, // Retrograde rotation
         orbitSpeed: 0.015,
-        texturePath: 'textures/venus.jpg',
+        texturePath: 'textures/2k_venus.jpg',
         tilt: 3.096 // Nearly upside-down, retrograde tilt
     },
     {
@@ -33,7 +33,7 @@ export const planets: PlanetData[] = [
         distance: 150,
         rotationSpeed: 0.5,
         orbitSpeed: 0.01,
-        texturePath: 'textures/earth.jpg',
+        texturePath: 'textures/2k_earth.jpg',
         tilt: 0.408 // 23.4 degrees
     },
     {
@@ -42,7 +42,7 @@ export const planets: PlanetData[] = [
         distance: 228,
         rotationSpeed: 0.48,
         orbitSpeed: 0.008,
-        texturePath: 'textures/mars.jpg',
+        texturePath: 'textures/2k_mars.jpg',
         tilt: 0.439 // 25.2 degrees
     },
     {
@@ -51,7 +51,7 @@ export const planets: PlanetData[] = [
         distance: 400,
         rotationSpeed: 1.2,
         orbitSpeed: 0.004,
-        texturePath: 'textures/jupiter.jpg',
+        texturePath: 'textures/2k_jupiter.jpg',
         tilt: 0.054 // 3.1 degrees
     },
     {
@@ -60,7 +60,7 @@ export const planets: PlanetData[] = [
         distance: 600,
         rotationSpeed: 1.0,
         orbitSpeed: 0.003,
-        texturePath: 'textures/saturn.jpg',
+        texturePath: 'textures/2k_saturn.jpg',
         tilt: 0.467 // 26.7 degrees
     },
     {
@@ -69,7 +69,7 @@ export const planets: PlanetData[] = [
         distance: 850,
         rotationSpeed: -0.7, // Retrograde rotation
         orbitSpeed: 0.002,
-        texturePath: 'textures/uranus.jpg',
+        texturePath: 'textures/2k_uranus.jpg',
         tilt: 1.706 // 97.8 degrees — rotates nearly on its side
     },
     {
@@ -78,7 +78,7 @@ export const planets: PlanetData[] = [
         distance: 1100,
         rotationSpeed: 0.75,
         orbitSpeed: 0.001,
-        texturePath: 'textures/neptune.jpg',
+        texturePath: 'textures/2k_neptune.jpg',
         tilt: 0.494 // 28.3 degrees
     },
 ]
