@@ -9,6 +9,8 @@ export class Moon extends SolarBody {
     constructor(data: MoonData, parentPosition: THREE.Vector3) {
         super(data.name, data.radius, data.texturePath, data.rotationSpeed)
 
+        this.mesh.castShadow = false
+
         this.orbitSpeed = data.orbitSpeed
 
         this.mesh.rotation.z = data.tilt
@@ -24,12 +26,13 @@ export class Moon extends SolarBody {
         scene.add(this.pivot)
     }
 
-    // Called each frame with delta and the parent planet's latest world position
-    update(delta: number, parentPosition?: THREE.Vector3): void {
-        super.update(delta)
-        this.pivot.rotation.y += this.orbitSpeed * delta
+    // Called each frame to keep the pivot on the parent planet as it orbits
+    trackParent(parentPosition: THREE.Vector3): void {
+        this.pivot.position.copy(parentPosition)
+    }
 
-        // Track the parent planet as it moves along its own orbit
-        if (parentPosition) this.pivot.position.copy(parentPosition)
+    update(delta: number, rotationMultiplier: number = 1): void {
+        super.update(delta, rotationMultiplier)
+        this.pivot.rotation.y += this.orbitSpeed * delta
     }
 }

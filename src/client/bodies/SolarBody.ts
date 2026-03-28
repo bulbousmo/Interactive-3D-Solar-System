@@ -17,7 +17,7 @@ export class SolarBody {
         this.rotationSpeed = rotationSpeed
     }
 
-    update(delta: number): void {
-        this.mesh.rotation.y += this.rotationSpeed * delta
+    update(delta: number, rotationMultiplier: number = 1): void {
+        this.mesh.rotation.y += this.rotationSpeed * delta * rotationMultiplier
     }
 }

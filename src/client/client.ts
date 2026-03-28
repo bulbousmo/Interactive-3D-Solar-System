@@ -1,9 +1,12 @@
+import { GUI } from 'dat.gui'
 import { SceneManager } from './scene/SceneManager'
 import { StarField } from './scene/StarField'
 import { Sun } from './bodies/Sun'
 import { Planet } from './bodies/Planet'
 import { Moon } from './bodies/Moon'
 import { CameraController } from './controls/CameraController'
+import { FocusController } from './controls/FocusController'
+import { Raycaster } from './interaction/Raycaster'
 import { planets } from './data/planets'
 import { moons } from './data/moons'
 
@@ -37,17 +40,53 @@ const moonObjects = moons.map(data => {
     return { moon, parentName: data.parentPlanet }
 })
 
+// Collect all clickable meshes and build a name -> mesh map for focus tracking
+const allMeshes = [
+    sun.mesh,
+    ...planetObjects.map(p => p.mesh),
+    ...moonObjects.map(({ moon }) => moon.mesh)
+]
+const bodyByName = new Map(allMeshes.map(m => [m.name, m]))
+
 const cameraController = new CameraController(sceneManager.camera, sceneManager.renderer.domElement)
 
+// Declare first so both closures below can reference each other without circular init errors.
+// JS closures capture the variable reference, so both will be assigned by the time any click fires.
+let raycaster: Raycaster
+let focusController: FocusController
+
+raycaster = new Raycaster(
+    sceneManager.camera,
+    sceneManager.renderer.domElement,
+    (name) => focusController.focus(name)
+)
+raycaster.register(allMeshes)
+
+focusController = new FocusController(
+    sceneManager.camera,
+    sceneManager.renderer.domElement,
+    bodyByName,
+    (name) => { console.log(`Focused: ${name}`) },  // onFocus — InfoPanel hooks in here
+    ()     => { raycaster.suppressNextClick() }      // onUnfocus — next click enters fly mode
+)
+
+const simParams = { orbitSpeed: 1, rotationSpeed: 1 }
+const gui = new GUI({ width: 250 })
+gui.add(simParams, 'orbitSpeed',    0, 10, 0.1).name('Orbit Speed')
+gui.add(simParams, 'rotationSpeed', 0, 10, 0.1).name('Rotation Speed')
+
 sceneManager.onAnimate(delta => {
-    cameraController.update(delta)
-    sun.update(delta)
-    planetObjects.forEach(p => p.update(delta))
+    // Disable free-fly while the camera is tracking a body
+    if (!focusController.isActive) cameraController.update(delta)
+    focusController.update(delta)
+    sun.update(delta * simParams.rotationSpeed)
+    planetObjects.forEach(p => p.update(delta, simParams.orbitSpeed, simParams.rotationSpeed))
 
     // Planets must update first so their world positions are current
     moonObjects.forEach(({ moon, parentName }) => {
         const parent = planetByName.get(parentName)!
-        moon.update(delta, parent.getWorldPosition())
+        moon.trackParent(parent.getWorldPosition())
+        moon.update(delta * simParams.orbitSpeed, simParams.rotationSpeed)
     })
 })
 

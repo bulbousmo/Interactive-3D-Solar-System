@@ -30,11 +30,8 @@ export class Planet extends SolarBody {
         scene.add(this.pivot)
     }
 
-    update(delta: number): void {
-        // Spin the planet on its own axis
-        super.update(delta)
-
-        // Advance the orbit by rotating the pivot around the Y axis
-        this.pivot.rotation.y += this.orbitSpeed * delta
+    update(delta: number, orbitMultiplier: number = 1, rotationMultiplier: number = 1): void {
+        super.update(delta, rotationMultiplier)
+        this.pivot.rotation.y += this.orbitSpeed * delta * orbitMultiplier
     }
 }
