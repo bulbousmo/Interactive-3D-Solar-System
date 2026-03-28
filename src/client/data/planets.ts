@@ -24,7 +24,7 @@ export const planets: PlanetData[] = [
         distance: 108,
         rotationSpeed: -0.004, // Retrograde rotation
         orbitSpeed: 0.015,
-        texturePath: 'textures/2k_venus.jpg',
+        texturePath: 'textures/2k_venus_surface.jpg',
         tilt: 3.096 // Nearly upside-down, retrograde tilt
     },
     {
@@ -33,7 +33,7 @@ export const planets: PlanetData[] = [
         distance: 150,
         rotationSpeed: 0.5,
         orbitSpeed: 0.01,
-        texturePath: 'textures/2k_earth.jpg',
+        texturePath: 'textures/2k_earth_daymap.jpg',
         tilt: 0.408 // 23.4 degrees
     },
     {

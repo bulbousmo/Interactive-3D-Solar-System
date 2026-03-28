@@ -18,7 +18,7 @@ export class Sun {
         this.mesh.name = 'Sun'
 
         // Single point light at the origin — the only light source in the scene
-        this.light = new THREE.PointLight(0xffffff, 3, 0, 1.2)
+        this.light = new THREE.PointLight(0xffffff, 2, 0, 0)
         this.light.castShadow = true
         this.light.shadow.mapSize.set(2048, 2048)
         this.mesh.add(this.light)   // Makes sure light moves with the sun mesh

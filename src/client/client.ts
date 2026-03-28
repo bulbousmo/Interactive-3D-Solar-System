@@ -3,6 +3,7 @@ import { StarField } from './scene/StarField'
 import { Sun } from './bodies/Sun'
 import { Planet } from './bodies/Planet'
 import { Moon } from './bodies/Moon'
+import { CameraController } from './controls/CameraController'
 import { planets } from './data/planets'
 import { moons } from './data/moons'
 
@@ -36,7 +37,10 @@ const moonObjects = moons.map(data => {
     return { moon, parentName: data.parentPlanet }
 })
 
+const cameraController = new CameraController(sceneManager.camera, sceneManager.renderer.domElement)
+
 sceneManager.onAnimate(delta => {
+    cameraController.update(delta)
     sun.update(delta)
     planetObjects.forEach(p => p.update(delta))
 

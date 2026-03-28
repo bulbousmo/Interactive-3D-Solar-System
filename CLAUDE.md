@@ -43,21 +43,35 @@ Additional resources that I plan on using are online documentation and forums di
 
 ## Current State
 
-The cube demo has been replaced. The following modules are implemented:
+The following modules are implemented:
 
 - **`scene/SceneManager.ts`** — owns the Three.js scene, camera, renderer, and animation loop. Other modules register per-frame callbacks via `sceneManager.onAnimate(delta => { ... })` and add objects via `scene.add(mesh)`. Shadow maps are enabled (`PCFSoftShadowMap`). Far clip plane is `1,000,000` for solar system scale.
-- **`bodies/SolarBody.ts`** — base class for all spherical bodies. Takes `name`, `radius`, `texturePath`, `rotationSpeed`. Exposes a `mesh` (caller adds it to the scene) and an `update(delta)` method that spins it on the Y axis.
-- **`data/planets.ts`** — exports a `PlanetData` interface and a `planets` array with all 8 planets. Distance is in scene units (~150 = 1 AU). Radius is exaggerated for visibility. Tilt is in radians.
+- **`bodies/SolarBody.ts`** — base class for all spherical bodies. Takes `name`, `radius`, `texturePath`, `rotationSpeed`. Exposes a `mesh` and an `update(delta)` method that spins it on the Y axis.
+- **`bodies/Sun.ts`** — not a SolarBody subclass. Uses `MeshBasicMaterial` (self-illuminated, ignores lighting). Owns the scene's only `PointLight` (intensity 2, decay 0, infinite range) as a child of the mesh. `decay: 0` means no distance falloff — all planets receive equal illumination. Shadow map resolution 2048x2048.
+- **`bodies/Planet.ts`** — extends `SolarBody`. Uses a pivot `Object3D` at the origin; mesh is offset by `distance` on X. Pivot rotates on Y each frame for orbit. `getWorldPosition()` returns the mesh's world-space position for moon tracking. Tilt applied to `mesh.rotation.z`.
+- **`bodies/Moon.ts`** — extends `SolarBody`. Same pivot pattern as `Planet.ts` but pivot follows parent planet's world position each frame. `update(delta, parentPosition?)` — parentPosition is optional to satisfy base class signature.
+- **`scene/StarField.ts`** — `Points` geometry with 10,000 vertices distributed uniformly on a sphere of radius 900,000 using spherical coordinates. `PointsMaterial` with size attenuation.
+- **`controls/CameraController.ts`** — free-roam 6-DOF fly camera. Click canvas to lock pointer, Escape to release. Mouse sensitivity `0.002`, YXZ Euler order, pitch clamped to ±90°. Movement along camera-local axes. Scroll wheel adjusts base speed.
+- **`data/planets.ts`** — exports `PlanetData` interface and `planets` array with all 8 planets. Distance in scene units (~150 = 1 AU), radius exaggerated for visibility, tilt in radians.
+- **`data/moons.ts`** — exports `MoonData` interface (same as `PlanetData` plus `parentPlanet: string`) and `moons` array with 12 moons across Earth, Mars, Jupiter, Saturn, Uranus, Neptune. Includes Triton's retrograde orbit (negative orbitSpeed) and Phobos's fast orbit.
+
+### Camera Controls
+
+| Input | Action |
+|-------|--------|
+| Click canvas | Lock pointer / enter fly mode |
+| Escape | Release pointer |
+| Mouse move | Look around |
+| W / S | Fly forward / back |
+| A / D | Strafe left / right |
+| E / Q | Fly up / down |
+| Shift | 10× speed boost |
+| Scroll wheel | Adjust base speed |
+
+### Textures
+Static assets are served directly from `dist/client/` by the webpack dev server. Textures live at `dist/client/textures/<name>.jpg`. There is no copy plugin — files must be placed there manually.
 
 ## What's Next
 
-Build these in order:
-
-1. **`Planet.ts`** — extends `SolarBody`. Reads from `PlanetData`. Handles orbital movement around the sun (use a pivot `Object3D` at the origin, add the mesh to it offset by `distance`, rotate the pivot each frame by `orbitSpeed * delta`). Apply `tilt` to `mesh.rotation.z`.
-2. **`Sun.ts`** — extends `SolarBody`. Adds a `PointLight` at the origin (the sun is the only light source). Use `MeshBasicMaterial` instead of `MeshStandardMaterial` so it isn't affected by its own light.
-3. **`data/moons.ts`** — same pattern as `planets.ts`. Add a `parentPlanet: string` field to link moons to their parent.
-4. **`Moon.ts`** — extends `SolarBody`. Same pivot orbit pattern as `Planet.ts` but pivots around its parent planet's position instead of the origin.
-5. **`scene/StarField.ts`** — creates a `Points` geometry with randomly distributed vertices across a large sphere for the background star field.
-6. **`controls/CameraController.ts`** — free-roam 3D movement (no flat plane constraint).
-7. **`interaction/Raycaster.ts`**, **`controls/FocusController.ts`**, **`ui/InfoPanel.ts`**, **`ui/SearchBar.ts`** — click/search to focus and display planet facts.
+1. **`interaction/Raycaster.ts`**, **`controls/FocusController.ts`**, **`ui/InfoPanel.ts`**, **`ui/SearchBar.ts`** — click/search to focus and display planet facts.
 
