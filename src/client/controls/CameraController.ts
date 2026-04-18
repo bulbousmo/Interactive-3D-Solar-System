@@ -18,7 +18,7 @@ export class CameraController {
         this.camera = camera
         this.domElement = domElement
 
-        domElement.addEventListener('click', this.onLock)
+        domElement.addEventListener('contextmenu', this.onLock)
         document.addEventListener('pointerlockchange', this.onPointerLockChange)
         document.addEventListener('mousemove', this.onMouseMove)
         document.addEventListener('keydown', this.onKeyDown)
@@ -26,9 +26,14 @@ export class CameraController {
         domElement.addEventListener('wheel', this.onWheel)
     }
 
-    // Click the canvas to capture the mouse
-    private onLock = (): void => {
-        this.domElement.requestPointerLock()
+    // Right-click the canvas to toggle pointer lock
+    private onLock = (e: Event): void => {
+        e.preventDefault()   // suppress the browser context menu
+        if (this.isLocked) {
+            document.exitPointerLock()
+        } else {
+            this.domElement.requestPointerLock()
+        }
     }
 
     private onPointerLockChange = (): void => {
@@ -77,7 +82,7 @@ export class CameraController {
     }
 
     dispose(): void {
-        this.domElement.removeEventListener('click', this.onLock)
+        this.domElement.removeEventListener('contextmenu', this.onLock)
         document.removeEventListener('pointerlockchange', this.onPointerLockChange)
         document.removeEventListener('mousemove', this.onMouseMove)
         document.removeEventListener('keydown', this.onKeyDown)

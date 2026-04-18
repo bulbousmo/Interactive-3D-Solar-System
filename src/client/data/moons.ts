@@ -30,7 +30,7 @@ export const moons: MoonData[] = [
         distance: 8,
         rotationSpeed: 0.3,
         orbitSpeed: 2.0,    // Orbits Mars faster than Mars rotates
-        texturePath: 'textures/phobos.jpg',
+        texturePath: 'textures/2k_moon.jpg',
         tilt: 0.018
     },
     {
@@ -40,7 +40,7 @@ export const moons: MoonData[] = [
         distance: 13,
         rotationSpeed: 0.2,
         orbitSpeed: 0.8,
-        texturePath: 'textures/deimos.jpg',
+        texturePath: 'textures/2k_moon.jpg',
         tilt: 0.034
     },
 
@@ -52,7 +52,7 @@ export const moons: MoonData[] = [
         distance: 35,
         rotationSpeed: 0.4,
         orbitSpeed: 1.5,
-        texturePath: 'textures/io.jpg',
+        texturePath: 'textures/2k_moon.jpg',
         tilt: 0.0
     },
     {
@@ -62,7 +62,7 @@ export const moons: MoonData[] = [
         distance: 46,
         rotationSpeed: 0.3,
         orbitSpeed: 0.8,
-        texturePath: 'textures/europa.jpg',
+        texturePath: 'textures/2k_moon.jpg',
         tilt: 0.008
     },
     {
@@ -72,7 +72,7 @@ export const moons: MoonData[] = [
         distance: 60,
         rotationSpeed: 0.2,
         orbitSpeed: 0.4,
-        texturePath: 'textures/ganymede.jpg',
+        texturePath: 'textures/2k_moon.jpg',
         tilt: 0.003
     },
     {
@@ -82,7 +82,7 @@ export const moons: MoonData[] = [
         distance: 75,
         rotationSpeed: 0.1,
         orbitSpeed: 0.2,
-        texturePath: 'textures/callisto.jpg',
+        texturePath: 'textures/2k_moon.jpg',
         tilt: 0.003
     },
 
@@ -94,7 +94,7 @@ export const moons: MoonData[] = [
         distance: 45,
         rotationSpeed: 0.1,
         orbitSpeed: 0.3,
-        texturePath: 'textures/titan.jpg',
+        texturePath: 'textures/2k_moon.jpg',
         tilt: 0.0
     },
     {
@@ -104,7 +104,7 @@ export const moons: MoonData[] = [
         distance: 28,
         rotationSpeed: 0.3,
         orbitSpeed: 1.0,
-        texturePath: 'textures/enceladus.jpg',
+        texturePath: 'textures/2k_moon.jpg',
         tilt: 0.0
     },
 
@@ -116,7 +116,7 @@ export const moons: MoonData[] = [
         distance: 28,
         rotationSpeed: 0.2,
         orbitSpeed: 0.4,
-        texturePath: 'textures/titania.jpg',
+        texturePath: 'textures/2k_moon.jpg',
         tilt: 0.0
     },
     {
@@ -126,7 +126,7 @@ export const moons: MoonData[] = [
         distance: 36,
         rotationSpeed: 0.2,
         orbitSpeed: 0.25,
-        texturePath: 'textures/oberon.jpg',
+        texturePath: 'textures/2k_moon.jpg',
         tilt: 0.0
     },
 
@@ -138,7 +138,7 @@ export const moons: MoonData[] = [
         distance: 35,
         rotationSpeed: 0.2,
         orbitSpeed: -0.35,  // Retrograde orbit — opposite direction to Neptune's rotation
-        texturePath: 'textures/triton.jpg',
+        texturePath: 'textures/2k_moon.jpg',
         tilt: 2.749          // 157.6 degrees — highly inclined retrograde orbit
     },
 ]

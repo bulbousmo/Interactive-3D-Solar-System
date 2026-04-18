@@ -31,21 +31,24 @@ export class Raycaster {
     }
 
     private onClick = (e: MouseEvent): void => {
-        // Ignore clicks made while the pointer is locked (fly mode)
-        if (document.pointerLockElement === this.domElement) return
-
         if (this.skipNextClick) {
             this.skipNextClick = false
             return
         }
 
-        const rect = this.domElement.getBoundingClientRect()
+        let ndc: THREE.Vector2
 
-        // Convert pixel coords to NDC — THREE.Raycaster expects [-1, 1] on both axes
-        const ndc = new THREE.Vector2(
-            ((e.clientX - rect.left)  / rect.width)  *  2 - 1,
-            ((e.clientY - rect.top)   / rect.height) * -2 + 1
-        )
+        if (document.pointerLockElement === this.domElement) {
+            // Pointer is locked — cast from the centre of the viewport (the crosshair)
+            ndc = new THREE.Vector2(0, 0)
+        } else {
+            // Free cursor — cast from the actual click position
+            const rect = this.domElement.getBoundingClientRect()
+            ndc = new THREE.Vector2(
+                ((e.clientX - rect.left)  / rect.width)  *  2 - 1,
+                ((e.clientY - rect.top)   / rect.height) * -2 + 1
+            )
+        }
 
         this.raycaster.setFromCamera(ndc, this.camera)
 

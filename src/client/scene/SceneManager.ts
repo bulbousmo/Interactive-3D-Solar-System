@@ -13,6 +13,7 @@ export class SceneManager {
     private animateCallbacks: Array<(delta: number) => void> = [] // Callbacks to run each frame, with delta time in seconds
     private clock: THREE.Clock  // Clock to track time between frames for smooth animation
     private animationFrameId: number | null = null  // ID for the animation frame, used to stop the loop when needed
+    private panelWidth: number = 0  // Left offset reserved for the info panel
 
     constructor() {
         this.scene = new THREE.Scene()
@@ -33,6 +34,10 @@ export class SceneManager {
         this.renderer.setPixelRatio(window.devicePixelRatio)
         this.renderer.shadowMap.enabled = true
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap   // Soft shadows for better visuals
+        // Position the canvas so it can be shifted right when the info panel opens
+        this.renderer.domElement.style.position = 'fixed'
+        this.renderer.domElement.style.top = '0'
+        this.renderer.domElement.style.left = '0'
         document.body.appendChild(this.renderer.domElement) // Add the canvas to the document
 
         // Stats overlay
@@ -69,10 +74,23 @@ export class SceneManager {
         this.stats.update()
     }
 
-    private onResize = (): void => {
-        this.camera.aspect = window.innerWidth / window.innerHeight
+    // Shift the renderer right by `width` pixels (pass 0 to restore full window).
+    public setPanelWidth(width: number): void {
+        this.panelWidth = width
+        this.applyViewport()
+    }
+
+    private applyViewport(): void {
+        const w = window.innerWidth - this.panelWidth
+        const h = window.innerHeight
+        this.renderer.domElement.style.left = `${this.panelWidth}px`
+        this.renderer.setSize(w, h)
+        this.camera.aspect = w / h
         this.camera.updateProjectionMatrix()
-        this.renderer.setSize(window.innerWidth, window.innerHeight)
+    }
+
+    private onResize = (): void => {
+        this.applyViewport()
     }
 
     public dispose(): void {

@@ -1,3 +1,4 @@
+import * as THREE from 'three'
 import { GUI } from 'dat.gui'
 import { SceneManager } from './scene/SceneManager'
 import { StarField } from './scene/StarField'
@@ -9,6 +10,8 @@ import { FocusController } from './controls/FocusController'
 import { Raycaster } from './interaction/Raycaster'
 import { planets } from './data/planets'
 import { moons } from './data/moons'
+import { InfoPanel }   from './ui/InfoPanel'
+import { SearchBar }   from './ui/SearchBar'
 
 // Instantiate the scene manager and start animation loop
 const sceneManager = new SceneManager()
@@ -49,6 +52,8 @@ const allMeshes = [
 const bodyByName = new Map(allMeshes.map(m => [m.name, m]))
 
 const cameraController = new CameraController(sceneManager.camera, sceneManager.renderer.domElement)
+const infoPanel   = new InfoPanel()
+new SearchBar((name) => focusController.focus(name))
 
 // Declare first so both closures below can reference each other without circular init errors.
 // JS closures capture the variable reference, so both will be assigned by the time any click fires.
@@ -66,27 +71,39 @@ focusController = new FocusController(
     sceneManager.camera,
     sceneManager.renderer.domElement,
     bodyByName,
-    (name) => { console.log(`Focused: ${name}`) },  // onFocus — InfoPanel hooks in here
-    ()     => { raycaster.suppressNextClick() }      // onUnfocus — next click enters fly mode
+    (name) => { infoPanel.show(name) },         // onFocus
+    ()     => {                                  // onUnfocus
+        infoPanel.hide()
+        raycaster.suppressNextClick()
+    }
 )
 
-const simParams = { orbitSpeed: 1, rotationSpeed: 1 }
+// Ambient light — off by default (Sun is the sole light source per design)
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.3)
+ambientLight.visible = false
+sceneManager.scene.add(ambientLight)
+
+const simParams = { planetOrbitSpeed: 1, moonOrbitSpeed: 1, rotationSpeed: 1, ambientLight: false }
 const gui = new GUI({ width: 250 })
-gui.add(simParams, 'orbitSpeed',    0, 10, 0.1).name('Orbit Speed')
-gui.add(simParams, 'rotationSpeed', 0, 10, 0.1).name('Rotation Speed')
+gui.add(simParams, 'planetOrbitSpeed', 0, 1000, 1).name('Planet Orbit Speed')
+gui.add(simParams, 'moonOrbitSpeed',   0, 1000, 1).name('Moon Orbit Speed')
+gui.add(simParams, 'rotationSpeed',    0, 10,   0.1).name('Rotation Speed')
+gui.add(simParams, 'ambientLight').name('Ambient Light').onChange((v: boolean) => {
+    ambientLight.visible = v
+})
 
 sceneManager.onAnimate(delta => {
     // Disable free-fly while the camera is tracking a body
     if (!focusController.isActive) cameraController.update(delta)
     focusController.update(delta)
     sun.update(delta * simParams.rotationSpeed)
-    planetObjects.forEach(p => p.update(delta, simParams.orbitSpeed, simParams.rotationSpeed))
+    planetObjects.forEach(p => p.update(delta, simParams.planetOrbitSpeed, simParams.rotationSpeed))
 
     // Planets must update first so their world positions are current
     moonObjects.forEach(({ moon, parentName }) => {
         const parent = planetByName.get(parentName)!
         moon.trackParent(parent.getWorldPosition())
-        moon.update(delta * simParams.orbitSpeed, simParams.rotationSpeed)
+        moon.update(delta * simParams.moonOrbitSpeed, simParams.rotationSpeed)
     })
 })
 

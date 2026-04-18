@@ -1,3 +1,9 @@
+export interface RingData {
+    innerRadius: number
+    outerRadius: number
+    texturePath: string
+}
+
 export interface PlanetData {
     name: string
     radius: number
@@ -6,6 +12,7 @@ export interface PlanetData {
     orbitSpeed: number
     texturePath: string
     tilt: number
+    rings?: RingData
 }
 
 export const planets: PlanetData[] = [
@@ -61,7 +68,12 @@ export const planets: PlanetData[] = [
         rotationSpeed: 1.0,
         orbitSpeed: 0.003,
         texturePath: 'textures/2k_saturn.jpg',
-        tilt: 0.467 // 26.7 degrees
+        tilt: 0.467, // 26.7 degrees
+        rings: {
+            innerRadius: 22,
+            outerRadius: 42,
+            texturePath: 'textures/2k_saturn_ring_alpha.png',
+        }
     },
     {
         name: 'Uranus',
